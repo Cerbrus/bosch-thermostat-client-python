@@ -160,21 +160,21 @@
       }
     },
     "sensors": {
-      "thermalDisinfectlastResult": {
-        "id": "thermalDisinfect/lastResult",
-        "name": "thermalDisinfect lastResult"
+      "thermaldesinfectlastResult": {
+        "id": "thermaldesinfect/lastResult",
+        "name": "thermaldesinfect lastResult"
       },
-      "thermalDisinfectstate": {
-        "id": "thermalDisinfect/state",
-        "name": "thermalDisinfect state"
+      "thermaldesinfectstate": {
+        "id": "thermaldesinfect/state",
+        "name": "thermaldesinfect state"
       },
-      "thermalDisinfectlasttime": {
-        "id": "thermalDisinfect/time",
-        "name": "thermalDisinfect time"
+      "thermaldesinfectlasttime": {
+        "id": "thermaldesinfect/time",
+        "name": "thermaldesinfect time"
       },
-      "thermalDisinfectlastweekDay": {
-        "id": "thermalDisinfect/weekDay",
-        "name": "thermalDisinfect weekDay"
+      "thermaldesinfectlastweekDay": {
+        "id": "thermaldesinfect/weekDay",
+        "name": "thermaldesinfect weekDay"
       }
     },
     "switches": {
