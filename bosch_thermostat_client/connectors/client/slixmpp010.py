@@ -13,4 +13,4 @@ class BoschClientXMPP(ClientXMPP):
     def connect(self):
         if self.force_starttls:
             return super().connect(enable_direct_tls=True, enable_starttls=True)
-        return super().connect(enable_plaintext=True)
+        return super().connect()
