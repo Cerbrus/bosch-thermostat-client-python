@@ -253,7 +253,7 @@
         "haname": "performance",
         "boschname": ["ownprogram"]
       },
-	  {
+      {
         "haname": "eco",
         "boschname": ["eco"]
       }
@@ -282,7 +282,7 @@
       "switch_points": "value"
     },
     "refs": {
-	  "current_temp": {
+      "current_temp": {
         "id": "actualTemp",
         "name": "Tank temperature",
         "type": "regular"
