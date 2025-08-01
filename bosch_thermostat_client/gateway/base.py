@@ -1,10 +1,15 @@
 """Gateway module connecting to Bosch thermostat."""
 from __future__ import annotations
+
+import json
 import logging
+from datetime import datetime
 from typing import Any
 
 from bosch_thermostat_client.circuits import Circuits
 from bosch_thermostat_client.const import (
+    BASE_FIRMWARE_VERSION,
+    CRAWL_SENSORS,
     DATE,
     DHW,
     DHW_CIRCUITS,
@@ -16,22 +21,25 @@ from bosch_thermostat_client.const import (
     MODELS,
     NAME,
     NUMBER,
+    RECORDINGS,
     REFS,
     ROOT_PATHS,
     SC,
     SELECT,
-    SENSORS,
     SENSOR,
+    SENSORS,
     SWITCH,
+    SWITCHES,
     TYPE,
     UUID,
     VALUE,
-    BASE_FIRMWARE_VERSION,
-    RECORDINGS,
-    CRAWL_SENSORS,
-    SWITCHES,
 )
-from bosch_thermostat_client.db import get_custom_db, get_db_of_firmware, get_initial_db, async_get_errors
+from bosch_thermostat_client.db import (
+    async_get_errors,
+    get_custom_db,
+    get_db_of_firmware,
+    get_initial_db,
+)
 from bosch_thermostat_client.exceptions import (
     DeviceException,
     FirmwareException,
@@ -40,8 +48,6 @@ from bosch_thermostat_client.exceptions import (
 from bosch_thermostat_client.helper import deep_into
 from bosch_thermostat_client.sensors import Sensors
 from bosch_thermostat_client.switches import Switches
-from datetime import datetime
-import json
 
 _LOGGER = logging.getLogger(__name__)
 
