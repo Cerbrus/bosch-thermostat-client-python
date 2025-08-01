@@ -263,6 +263,11 @@
         "additionalHeater": {
             "id": "/systemStates/additionalHeater",
             "name": "Additional heater"
+        },
+        "summaryAlarm": {
+            "id": "/systemStates/summaryAlarm",
+            "name": "Summary alarm",
+            "type": "binary"
         }
     },
     "crawlSensors": [
