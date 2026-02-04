@@ -363,6 +363,10 @@
             "id": "/system/appliance/actualSupplyTemperature",
             "name": "Actual Supply temperature"
         },
+        "applianceSupplyTemp": {
+            "id": "/heatSources/applianceSupplyTemperature",
+            "name": "Appliance Supply temperature"
+        },
         "actualModulation": {
             "id": "/heatSources/actualModulation",
             "name": "Actual modulation"
