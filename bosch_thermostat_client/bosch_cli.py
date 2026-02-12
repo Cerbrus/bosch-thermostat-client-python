@@ -12,6 +12,7 @@ from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 from bosch_thermostat_client.const.pointtapi import BRUDERUS
 from bosch_thermostat_client.version import __version__
 from bosch_thermostat_client.exceptions import FailedAuthException
+from bosch_thermostat_client.gateway import PoinTTAPIGateway
 import json
 import asyncio
 from functools import wraps
@@ -131,16 +132,103 @@ def coro(f):
 
     return wrapper
 
+async def load_tokens(token_file):
+    if token_file.is_file():
+        with open(token_file) as f:
+            tokens = json.load(f)
+        return tokens
+    return None
+
+async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json"):
+    """
+    Perform OAuth authentication flow and save tokens.
+
+    Args:
+        device_id (str, optional): Your Bosch device ID (gateway UUID)
+        token_file (str): Path to save tokens (default: tokens.json)
+
+    Returns:
+        dict: Token information if successful, None otherwise
+    """
+    async with aiohttp.ClientSession() as session:
+        # Create connector to handle OAuth flow
+        # We use a placeholder for access_token initially
+        gateway = PoinTTAPIGateway(
+            session=session,
+            session_type="HTTP",
+            host=device_id,
+            access_key=None,
+            access_token="PLACEHOLDER",  # Will be replaced after OAuth
+            refresh_token=None,
+            token_file=None  # Don't auto-save yet
+        )
+
+        connector = gateway._connector
+
+        # Step 1: Generate and open OAuth URL
+        print("\n[Step 1] Opening browser for Bosch login...")
+        auth_url = connector.start_oauth_flow(open_browser=True)
+        print(f"\nIf browser didn't open, visit this URL manually:")
+        print(f"{auth_url}\n")
+
+        # Step 2: Get callback URL from user
+        print("[Step 2] After logging in, you'll be redirected to a URL starting with:")
+        print("         com.bosch.tt.dashtt.pointt://app/login?code=...")
+        print("\nNote: The page may show 'Cannot open page' - that's normal!")
+        print("      Just copy the entire URL from your browser's address bar.\n")
+
+        callback_url = input("Paste the callback URL here: ").strip()
+
+        if not callback_url:
+            print("❌ No URL provided. Exiting.")
+            return None
+
+        # Step 3: Extract authorization code
+        print("\n[Step 3] Extracting authorization code...")
+        code = connector.extract_code_from_url(callback_url)
+
+        if not code:
+            print("❌ Could not extract authorization code from URL.")
+            print("   Make sure you copied the complete callback URL.")
+            return None
+
+        print(f"✓ Authorization code extracted: {code[:20]}...")
+
+        # Step 4: Exchange code for tokens
+        print("\n[Step 4] Exchanging code for access tokens...")
+        success = await connector.exchange_code_for_tokens(code)
+
+        if not success:
+            print("❌ Token exchange failed. Check logs for details.")
+            return None
+
+        print("✓ Successfully obtained OAuth tokens!")
+
+        # Step 5: Save tokens to file
+        print(f"\n[Step 5] Saving tokens to {token_file}...")
+        token_data = {
+            "device_id": device_id,
+            "access_token": connector._access_token,
+            "refresh_token": connector._refresh_token,
+            "expires_at": connector._token_expires_at.isoformat() if connector._token_expires_at else None,
+        }
+
+        token_path = Path(token_file)
+        with open(token_path, 'w') as f:
+            json.dump(token_data, f, indent=2)
+
+        print(f"✓ Tokens saved to {token_path.absolute()}")
+
 async def init_gateway(host, session, session_type, token, password, BoschGateway):
     if (session_type == POINTTAPI):
         # cloud API (POINTTAPI)
         token_file = Path(token)
-        if token_file.is_file():
-            with open(token_file) as f:
-                tokens = json.load(f)
-        else:
-            _LOGGER.error("Failed to open token file: %s", token)
-            return
+        tokens = await load_tokens(token_file)
+        if not tokens:
+            _LOGGER.warning("Failed to open token file: %s", token)
+            await authenticate_and_save_tokens(host, token)
+            # retry loading token file
+            tokens = await load_tokens(token_file)
 
         gateway = BoschGateway(
             session=session,
