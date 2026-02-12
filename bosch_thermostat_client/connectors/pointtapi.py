@@ -125,6 +125,7 @@ class PoinTTAPIConnector:
         "pointt.castt.flow.token-exchange",
         "bacon",
     ]
+    # hcc.tariff.read
 
     def __init__(self, host, access_token, refresh_token=None, token_expires_at=None, device_type=POINTTAPI, token_file=None, **kwargs):
         """Init PoinTT API connector.
@@ -366,6 +367,9 @@ class PoinTTAPIConnector:
                 raise DeviceException(f"Connection error: {err}")
             except ClientError as err:
                 raise DeviceException(f"Client error for {uri}: {err}")
+            except ResponseException as err:
+                # Don't retry ResponseException (e.g., 404, wrong content type)
+                raise DeviceException(f"Invalid response for {uri}: {err}")
             except DeviceException:
                 # Re-raise DeviceException (including rate limit errors)
                 raise
@@ -459,7 +463,7 @@ class PoinTTAPIConnector:
         query = urllib.parse.quote(query_params_encoded)
 
         query_params_new = urllib.parse.quote_plus("/auth/connect/authorize/callback?")
-        query_full = "ReturnUrl=" + query_params_new + query + "&f=g4nN"
+        query_full = "ReturnUrl=" + query_params_new + query
 
         return urlunparse(
             Components(

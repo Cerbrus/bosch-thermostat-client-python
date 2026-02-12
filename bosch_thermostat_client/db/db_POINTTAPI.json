@@ -4,22 +4,22 @@
     "uuid": "/gateway/uuid",
     "dateTime": "/gateway/DateTime",
     "versionFirmware": "/gateway/versionFirmware",
+    "brand": "/system/brand",
+    "systemInfo": "/system/info",
     "versionHardware": "/gateway/versionHardware",
     "serialId": "/gateway/serialId",
     "timeZone": "/gateway/tzInfo/timeZone",
     "systemBus": "/system/bus",
-    "model": "/system/appliance/model"
+    "model": "/gateway/versionHardware"
   },
   "models": {
-    "POINTTAPI": {
-      "value": "POINTTAPI",
-      "name": "PoinTT API",
-      "type": "POINTTAPI"
+    "K30RF_v1": {
+      "value": "K30RF",
+      "name": "K30 wifi",
+      "type": "default"
     }
   },
   "_unsupported": {
-    "brand": "/system/brand",
-    "systemInfo": "/system/info",
     "systemType": "/system/systemType"
   }
 }
