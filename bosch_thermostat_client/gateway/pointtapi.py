@@ -115,8 +115,7 @@ class PoinTTAPIGateway(BaseGateway):
         if sys_model:
             model = model_scheme.get(sys_model)
             if model is not None:
-                _LOGGER.debug("Found supported device %s with id %s", model, _id)
-                attached_devices[_id] = model
+                _LOGGER.debug("Found supported device %s", model)
                 return model
 
         _LOGGER.error(
