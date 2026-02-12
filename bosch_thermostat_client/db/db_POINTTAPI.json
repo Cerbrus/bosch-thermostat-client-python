@@ -2,7 +2,7 @@
   "versionFirmwarePath": "/gateway/versionFirmware",
   "gateway": {
     "uuid": "/gateway/uuid",
-    "dateTime": "/gateway/DateTime",
+    "dateTime": "/gateway/dateTime",
     "versionFirmware": "/gateway/versionFirmware",
     "brand": "/system/brand",
     "systemInfo": "/system/info",
@@ -13,10 +13,10 @@
     "model": "/gateway/versionHardware"
   },
   "models": {
-    "K30RF_v1": {
-      "value": "K30RF",
-      "name": "K30 wifi",
-      "type": "default"
+    "MX300": {
+      "value": "MX300",
+      "name": "MX300",
+      "type": "BRUDERUS"
     }
   },
   "_unsupported": {

@@ -61,7 +61,7 @@
                 "type": "setpoint"
             },
             "status": {
-                "id": "status",
+                "id": "overallStatus",
                 "name": "Heating circuit status",
                 "type": "regular"
             },

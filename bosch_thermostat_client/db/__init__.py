@@ -7,6 +7,7 @@ import os
 
 from bosch_thermostat_client.const import DEFAULT, FIRMWARE_VERSION, POINTTAPI
 from bosch_thermostat_client.const.nefit import NEFIT
+from bosch_thermostat_client.const.pointtapi import BRUDERUS
 from bosch_thermostat_client.const.ivt import (
     CAN,
     IVT,
@@ -29,6 +30,7 @@ DEVICE_TYPES = {
     NSC_ICOM_GATEWAY: "nsc_icom_gateway/{}.json",
     EASYCONTROL: "easycontrol/{}.json",
     POINTTAPI: "pointtapi/{}.json",
+    BRUDERUS: "bruderus/{}.json",
 }
 
 

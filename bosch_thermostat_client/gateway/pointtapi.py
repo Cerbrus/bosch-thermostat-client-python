@@ -1,5 +1,6 @@
 """Gateway module connecting to Bosch thermostat via PoinTT API."""
 
+import json
 import logging
 
 from bosch_thermostat_client.connectors import connector_ivt_chooser
@@ -16,6 +17,7 @@ from bosch_thermostat_client.const import (
     TYPE,
     ID,
     REFERENCES,
+    SYSTEM_BUS,
     UUID,
 )
 from bosch_thermostat_client.const.ivt import SYSTEM_INFO
@@ -93,10 +95,26 @@ class PoinTTAPIGateway(BaseGateway):
 
     def get_device_model(self, _db):
         """Find device model."""
-        # Device model is not provided by PoinTTAPI, use static value
-        # Set bus_type to POINTTAPI for proper circuit initialization
-        self._bus_type = POINTTAPI
-        return _db.get(MODELS).get(POINTTAPI)
+        system_bus = self._data[GATEWAY].get(SYSTEM_BUS)
+        model_scheme = _db[MODELS]
+        self._bus_type = system_bus
+        system_info = self._data[GATEWAY].get(SYSTEM_INFO)
+        attached_devices = {}
+        if system_info:
+            for info in system_info:
+                _id = info.get("ModuleHwIdentStr", -1)
+                print(info)
+                model = model_scheme.get(_id)
+                if model is not None:
+                    _LOGGER.debug("Found supported device %s with id %s", model, _id)
+                    attached_devices[_id] = model
+            if attached_devices:
+                found_model = attached_devices[sorted(attached_devices.keys())[-1]]
+                _LOGGER.debug("Using model %s as database schema", found_model[VALUE])
+                return found_model
+        _LOGGER.error(
+            "I cannot find supported device. Your devices: %s", json.dumps(system_info)
+        )
 
     async def initialize_circuits(self, circ_type):
         """Initialize circuits for PoinTT API.

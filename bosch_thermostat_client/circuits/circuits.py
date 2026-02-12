@@ -49,6 +49,7 @@ def choose_circuit_type(device_type, circuit_type):
         else:
             return ""
 
+    _LOGGER.debug("searching for circuit type: %s", device_type + suffix())
     return {
         IVT: IVTCircuit,
         IVT_MBLAN: IVTCircuit,
@@ -58,6 +59,7 @@ def choose_circuit_type(device_type, circuit_type):
         EASYCONTROL + DHW: EasyDhwCircuit,
         EASYCONTROL + ZN: EasyZoneCircuit,
         POINTTAPI + AC: ACCircuit,
+        POINTTAPI: IVTCircuit,
     }[device_type + suffix()]
 
 
