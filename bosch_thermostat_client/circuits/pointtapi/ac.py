@@ -92,65 +92,20 @@ class ACCircuit(BasicCircuit):
             pass
 
     @property
-    def current_temp(self):
-        """Get current room temperature."""
-        try:
-            return self.get_value("current_temp")
-        except (KeyError, AttributeError):
-            return None
-
-    @property
     def target_temperature(self):
         """Get target temperature setpoint."""
-        try:
-            return self.get_value("target_temp")
-        except (KeyError, AttributeError):
-            return None
+        return self.get_value("target_temp")
 
     @property
     def operation_mode(self):
         """Get current operation mode."""
-        try:
-            return self.get_value("operation_mode")
-        except (KeyError, AttributeError):
-            return None
-
-    @property
-    def fan_speed(self):
-        """Get current fan speed."""
-        try:
-            # fan_speed not in acCircuits.refs, will need to access differently
-            # For now return None, can be added to refs if needed
-            return None
-        except (KeyError, AttributeError):
-            return None
-
-    @property
-    def air_flow_horizontal(self):
-        """Get horizontal air flow direction."""
-        try:
-            # airflow not in acCircuits.refs, will need to access differently
-            return None
-        except (KeyError, AttributeError):
-            return None
-
-    @property
-    def air_flow_vertical(self):
-        """Get vertical air flow direction."""
-        try:
-            # airflow not in acCircuits.refs, will need to access differently
-            return None
-        except (KeyError, AttributeError):
-            return None
+        return self.get_value("operation_mode")
 
     @property
     def is_on(self):
         """Check if AC is turned on."""
-        try:
-            ac_control = self.get_value("status")  # status ref maps to acControl
-            return ac_control == "on"
-        except (KeyError, AttributeError):
-            return False
+        ac_control = self.get_value("status")  # status ref maps to acControl
+        return ac_control == "on"
 
     @property
     def hvac_action(self):
