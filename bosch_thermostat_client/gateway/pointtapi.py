@@ -21,7 +21,7 @@ from bosch_thermostat_client.const import (
     UUID,
 )
 from bosch_thermostat_client.const.ivt import SYSTEM_INFO
-from bosch_thermostat_client.const.pointtapi import CIRCUIT_TYPES, CIRCUIT_TYPES as POINTTAPI_CIRCUIT_TYPES
+from bosch_thermostat_client.const.pointtapi import CIRCUIT_TYPES, SYSTEM_MODEL
 from bosch_thermostat_client.exceptions import DeviceException, FirmwareException, UnknownDevice
 from bosch_thermostat_client.db import get_db_of_firmware, async_get_errors
 from bosch_thermostat_client.circuits import Circuits
@@ -103,7 +103,6 @@ class PoinTTAPIGateway(BaseGateway):
         if system_info:
             for info in system_info:
                 _id = info.get("ModuleHwIdentStr", -1)
-                print(info)
                 model = model_scheme.get(_id)
                 if model is not None:
                     _LOGGER.debug("Found supported device %s with id %s", model, _id)
@@ -112,6 +111,14 @@ class PoinTTAPIGateway(BaseGateway):
                 found_model = attached_devices[sorted(attached_devices.keys())[-1]]
                 _LOGGER.debug("Using model %s as database schema", found_model[VALUE])
                 return found_model
+        sys_model = self._data[GATEWAY].get(SYSTEM_MODEL)
+        if sys_model:
+            model = model_scheme.get(sys_model)
+            if model is not None:
+                _LOGGER.debug("Found supported device %s with id %s", model, _id)
+                attached_devices[_id] = model
+                return model
+
         _LOGGER.error(
             "I cannot find supported device. Your devices: %s", json.dumps(system_info)
         )
@@ -145,7 +152,7 @@ class PoinTTAPIGateway(BaseGateway):
                     connector=self._connector,
                     attr_id=circuit_id,
                     db=self._db,
-                    _type=POINTTAPI_CIRCUIT_TYPES[circ_type],  # Maps AC -> "acCircuits"
+                    _type=CIRCUIT_TYPES[circ_type],  # Maps AC -> "acCircuits"
                     bus_type=self._bus_type,
                 )
                 _LOGGER.debug(f"Created AC circuit object: {circuit_object}")

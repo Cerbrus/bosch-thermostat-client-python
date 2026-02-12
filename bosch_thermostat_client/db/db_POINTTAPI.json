@@ -10,13 +10,18 @@
     "serialId": "/gateway/serialId",
     "timeZone": "/gateway/tzInfo/timeZone",
     "systemBus": "/system/bus",
-    "model": "/gateway/versionHardware"
+    "model": "/system/appliance/model"
   },
   "models": {
     "MX300": {
       "value": "MX300",
       "name": "MX300",
       "type": "BRUDERUS"
+    },
+    "rac-sharp-default": {
+      "value": "rac-sharp-default",
+      "name": "rac-sharp-default",
+      "type": "POINTTAPI"
     }
   },
   "_unsupported": {
