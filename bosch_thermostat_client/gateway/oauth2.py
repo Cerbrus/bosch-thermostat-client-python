@@ -35,12 +35,12 @@ _LOGGER = logging.getLogger(__name__)
 class Oauth2Gateway(BaseGateway):
     """Gateway connecting to the Bosch PoinTT API."""
 
-    device_type = None
     circuit_types = CIRCUIT_TYPES
 
     def __init__(
         self,
         session,
+        device_type,
         session_type=None,
         host=None,
         access_key=None,
@@ -55,6 +55,7 @@ class Oauth2Gateway(BaseGateway):
         Args:
             session: aiohttp session for HTTP requests (required for OAuth2)
             session_type (str, optional): Protocol type (accepted for compatibility, ignored - always HTTP)
+            device_type (str, optional): Device type for database loading (e.g., "IVT", "NEFIT", "EASYCONTROL")
             host (str): Device ID for the OAuth2 API
             access_key (optional): Not used for OAuth (accepted for compatibility with HA)
             access_token (str): OAuth access token
@@ -66,12 +67,14 @@ class Oauth2Gateway(BaseGateway):
         self._device_id = host  # For OAuth2 API, host is the device ID
         self._access_token = access_token
         self._refresh_token = refresh_token
+        self.device_type = device_type
 
         # Use the connector chooser to get the right connector
         Connector = connector_ivt_chooser(OAUTH2)
         self._connector = Connector(
             host=host,  # Device ID
             access_token=access_token,
+            device_type=device_type,
             refresh_token=refresh_token,
             token_expires_at=token_expires_at,
             loop=session,

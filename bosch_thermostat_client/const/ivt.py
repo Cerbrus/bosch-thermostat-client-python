@@ -17,6 +17,7 @@ IVT = "IVT"
 MBLAN = "mblan"
 IVT_MBLAN = "IVT_MBLAN"
 IVTAIR = "ivtair"
+BRUDERUS = "BRUDERUS"
 
 """ BOSCH SCHEME """
 

@@ -218,7 +218,7 @@ async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json")
 
         print(f"✓ Tokens saved to {token_path.absolute()}")
 
-async def init_gateway(host, session, session_type, token, password, BoschGateway):
+async def init_gateway(host, session, session_type, device_type, token, password, BoschGateway):
     if (session_type == OAUTH2):
         # cloud API (OAUTH2 authentication)
         token_file = Path(token)
@@ -235,6 +235,7 @@ async def init_gateway(host, session, session_type, token, password, BoschGatewa
         gateway = BoschGateway(
             session=session,
             session_type=session_type,
+            device_type=device_type,
             host=host,
             access_key=None,
             access_token=tokens['access_token'],
@@ -373,8 +374,8 @@ async def scan(
             filemode="a",
         )
     set_debug(debug)
-
-    if device.upper() in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
+    device_type = device.upper()
+    if device_type in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
         BoschGateway = bosch.gateway_chooser(device_type=device)
     else:
         _LOGGER.error("Wrong device type: %s", device)
@@ -385,7 +386,7 @@ async def scan(
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
-        if device.upper() != IVT:
+        if device_type != IVT:
             _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
@@ -395,7 +396,7 @@ async def scan(
         _LOGGER.error("Wrong protocol for this device")
         return
     try:
-        gateway = await init_gateway(host, session, session_type, token, password, BoschGateway)
+        gateway = await init_gateway(host, session, session_type, device_type,token, password, BoschGateway)
 
         _LOGGER.debug("Trying to connect to gateway.")
         connected = True if ignore_unknown else await gateway.check_connection()
@@ -511,7 +512,7 @@ async def put(
         return
     if value.isnumeric():
         value = float(value)
-    if device.upper() in (NEFIT, IVT, EASYCONTROL):
+    if device.upper() in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
         BoschGateway = bosch.gateway_chooser(device_type=device)
     else:
         _LOGGER.error("Wrong device type.")
