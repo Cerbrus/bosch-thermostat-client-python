@@ -6,10 +6,9 @@ from colorlog import ColoredFormatter
 import aiohttp
 import bosch_thermostat_client as bosch
 from bosch_thermostat_client.const import XMPP, HTTP, OAUTH2
-from bosch_thermostat_client.const.ivt import IVT
+from bosch_thermostat_client.const.ivt import IVT, IVTAIR, BRUDERUS
 from bosch_thermostat_client.const.nefit import NEFIT
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
-from bosch_thermostat_client.const.oauth2 import BRUDERUS
 from bosch_thermostat_client.version import __version__
 from bosch_thermostat_client.exceptions import FailedAuthException
 from bosch_thermostat_client.gateway import Oauth2Gateway
@@ -218,7 +217,8 @@ async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json")
 
         print(f"✓ Tokens saved to {token_path.absolute()}")
 
-async def init_gateway(host, session, session_type, device_type, token, password, BoschGateway):
+async def init_gateway(host, session, session_type, device_type, token, password):
+    BoschGateway = bosch.gateway_chooser(device_type=device_type)
     if (session_type == OAUTH2):
         # cloud API (OAUTH2 authentication)
         token_file = Path(token)
@@ -304,9 +304,9 @@ _cmd1_options = [
     click.option(
         "--device",
         envvar="BOSCH_DEVICE",
-        type=click.Choice([NEFIT, IVT, EASYCONTROL, BRUDERUS], case_sensitive=False),
+        type=click.Choice([NEFIT, IVT, EASYCONTROL, BRUDERUS, IVTAIR], case_sensitive=False),
         required=True,
-        help="Bosch device type. NEFIT, IVT, EASYCONTROL or BRUDERUS.",
+        help="Bosch device type (brand)",
     ),
     click.option(
         "-d",
@@ -375,11 +375,6 @@ async def scan(
         )
     set_debug(debug)
     device_type = device.upper()
-    if device_type in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
-        BoschGateway = bosch.gateway_chooser(device_type=device)
-    else:
-        _LOGGER.error("Wrong device type: %s", device)
-        return
     session_type = protocol.upper()
     gateway = None
     if session_type == XMPP:
@@ -396,7 +391,7 @@ async def scan(
         _LOGGER.error("Wrong protocol for this device")
         return
     try:
-        gateway = await init_gateway(host, session, session_type, device_type,token, password, BoschGateway)
+        gateway = await init_gateway(host, session, session_type, device_type,token, password)
 
         _LOGGER.debug("Trying to connect to gateway.")
         connected = True if ignore_unknown else await gateway.check_connection()
@@ -441,11 +436,7 @@ async def query(
     """Query values of Bosch thermostat."""
     set_debug(debug=debug)
 
-    if device.upper() in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
-        BoschGateway = bosch.gateway_chooser(device_type=device)
-    else:
-        _LOGGER.error("Wrong device type: %s", device)
-        return
+    device_type = device.upper()
     session_type = protocol.upper()
     _LOGGER.info("Connecting to %s with '%s'", host, session_type)
     gateway = None
@@ -453,7 +444,7 @@ async def query(
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
-        if device.upper() != IVT:
+        if device_type != IVT:
             _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
@@ -462,7 +453,7 @@ async def query(
     else:
         _LOGGER.error("Wrong protocol for this device")
     try:
-        gateway = await init_gateway(host, session, session_type, token, password, BoschGateway)
+        gateway = await init_gateway(host, session, session_type, device_type, token, password)
         await _runquery(gateway, path)
     except FailedAuthException as e:
         _LOGGER.error(e)
@@ -512,11 +503,7 @@ async def put(
         return
     if value.isnumeric():
         value = float(value)
-    if device.upper() in (NEFIT, IVT, EASYCONTROL, BRUDERUS):
-        BoschGateway = bosch.gateway_chooser(device_type=device)
-    else:
-        _LOGGER.error("Wrong device type.")
-        return
+    device_type = device.upper()
     session_type = protocol.upper()
     _LOGGER.info("Connecting to %s with '%s'", host, session_type)
     gateway = None
@@ -524,7 +511,7 @@ async def put(
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
-        if device.upper() != IVT:
+        if device_type != IVT:
             _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
@@ -532,7 +519,7 @@ async def put(
         _LOGGER.error("Wrong protocol for this device")
         return
     try:
-        gateway = await init_gateway(host, session, session_type, token, password, BoschGateway)
+        gateway = await init_gateway(host, session, session_type, device_type, token, password)
         await _runpush(gateway, path, value)
     finally:
         if gateway is not None:

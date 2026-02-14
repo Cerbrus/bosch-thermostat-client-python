@@ -7,7 +7,6 @@ import os
 
 from bosch_thermostat_client.const import DEFAULT, FIRMWARE_VERSION
 from bosch_thermostat_client.const.nefit import NEFIT
-from bosch_thermostat_client.const.oauth2 import BRUDERUS
 from bosch_thermostat_client.const.ivt import (
     CAN,
     IVT,
@@ -15,6 +14,7 @@ from bosch_thermostat_client.const.ivt import (
     RC300_RC200,
     MBLAN,
     IVTAIR,
+    BRUDERUS
 )
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 

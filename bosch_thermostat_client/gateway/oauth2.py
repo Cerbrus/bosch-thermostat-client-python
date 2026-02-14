@@ -124,6 +124,7 @@ class Oauth2Gateway(BaseGateway):
         _LOGGER.error(
             "I cannot find supported device. Your devices: %s", json.dumps(system_info)
         )
+        exit(1)
 
     async def initialize_circuits(self, circ_type):
         """Initialize circuits for PoinTT API.
