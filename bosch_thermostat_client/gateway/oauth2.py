@@ -9,7 +9,7 @@ from bosch_thermostat_client.const import (
     HC,
     AC,
     MODELS,
-    POINTTAPI,
+    OAUTH2,
     SENSORS,
     VALUE,
     VALUES,
@@ -21,7 +21,7 @@ from bosch_thermostat_client.const import (
     UUID,
 )
 from bosch_thermostat_client.const.ivt import SYSTEM_INFO
-from bosch_thermostat_client.const.pointtapi import CIRCUIT_TYPES, SYSTEM_MODEL
+from bosch_thermostat_client.const.oauth2 import CIRCUIT_TYPES, SYSTEM_MODEL
 from bosch_thermostat_client.exceptions import DeviceException, FirmwareException, UnknownDevice
 from bosch_thermostat_client.db import get_db_of_firmware, async_get_errors
 from bosch_thermostat_client.circuits import Circuits
@@ -32,10 +32,10 @@ from .base import BaseGateway
 _LOGGER = logging.getLogger(__name__)
 
 
-class PoinTTAPIGateway(BaseGateway):
+class Oauth2Gateway(BaseGateway):
     """Gateway connecting to the Bosch PoinTT API."""
 
-    device_type = POINTTAPI
+    device_type = None
     circuit_types = CIRCUIT_TYPES
 
     def __init__(
@@ -50,12 +50,12 @@ class PoinTTAPIGateway(BaseGateway):
         token_file=None,
         **kwargs
     ):
-        """PoinTT API Gateway constructor
+        """OAuth2 Gateway constructor
 
         Args:
-            session: aiohttp session for HTTP requests (required for PoinTT)
+            session: aiohttp session for HTTP requests (required for OAuth2)
             session_type (str, optional): Protocol type (accepted for compatibility, ignored - always HTTP)
-            host (str): Device ID for the PoinTT API
+            host (str): Device ID for the OAuth2 API
             access_key (optional): Not used for OAuth (accepted for compatibility with HA)
             access_token (str): OAuth access token
             refresh_token (str, optional): OAuth refresh token for token renewal
@@ -63,12 +63,12 @@ class PoinTTAPIGateway(BaseGateway):
             token_file (str, optional): Path to token storage file (for standalone use, not HA)
             **kwargs: Additional arguments for compatibility
         """
-        self._device_id = host  # For PoinTT API, host is the device ID
+        self._device_id = host  # For OAuth2 API, host is the device ID
         self._access_token = access_token
         self._refresh_token = refresh_token
 
         # Use the connector chooser to get the right connector
-        Connector = connector_ivt_chooser(POINTTAPI)
+        Connector = connector_ivt_chooser(OAUTH2)
         self._connector = Connector(
             host=host,  # Device ID
             access_token=access_token,

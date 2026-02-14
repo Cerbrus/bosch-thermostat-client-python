@@ -5,15 +5,16 @@ import logging
 import json
 import os
 
-from bosch_thermostat_client.const import DEFAULT, FIRMWARE_VERSION, POINTTAPI
+from bosch_thermostat_client.const import DEFAULT, FIRMWARE_VERSION
 from bosch_thermostat_client.const.nefit import NEFIT
-from bosch_thermostat_client.const.pointtapi import BRUDERUS
+from bosch_thermostat_client.const.oauth2 import BRUDERUS
 from bosch_thermostat_client.const.ivt import (
     CAN,
     IVT,
     NSC_ICOM_GATEWAY,
     RC300_RC200,
     MBLAN,
+    IVTAIR,
 )
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 
@@ -29,7 +30,7 @@ DEVICE_TYPES = {
     NEFIT: "nefit/{}.json",
     NSC_ICOM_GATEWAY: "nsc_icom_gateway/{}.json",
     EASYCONTROL: "easycontrol/{}.json",
-    POINTTAPI: "pointtapi/{}.json",
+    IVTAIR: "ivtair/{}.json",
     BRUDERUS: "bruderus/{}.json",
 }
 

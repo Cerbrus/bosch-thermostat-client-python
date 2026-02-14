@@ -5,14 +5,14 @@ import logging
 from colorlog import ColoredFormatter
 import aiohttp
 import bosch_thermostat_client as bosch
-from bosch_thermostat_client.const import XMPP, HTTP, POINTTAPI
+from bosch_thermostat_client.const import XMPP, HTTP, OAUTH2
 from bosch_thermostat_client.const.ivt import IVT
 from bosch_thermostat_client.const.nefit import NEFIT
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
-from bosch_thermostat_client.const.pointtapi import BRUDERUS
+from bosch_thermostat_client.const.oauth2 import BRUDERUS
 from bosch_thermostat_client.version import __version__
 from bosch_thermostat_client.exceptions import FailedAuthException
-from bosch_thermostat_client.gateway import PoinTTAPIGateway
+from bosch_thermostat_client.gateway import Oauth2Gateway
 import json
 import asyncio
 from functools import wraps
@@ -152,7 +152,7 @@ async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json")
     async with aiohttp.ClientSession() as session:
         # Create connector to handle OAuth flow
         # We use a placeholder for access_token initially
-        gateway = PoinTTAPIGateway(
+        gateway = Oauth2Gateway(
             session=session,
             session_type="HTTP",
             host=device_id,
@@ -219,8 +219,8 @@ async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json")
         print(f"✓ Tokens saved to {token_path.absolute()}")
 
 async def init_gateway(host, session, session_type, token, password, BoschGateway):
-    if (session_type == POINTTAPI):
-        # cloud API (POINTTAPI)
+    if (session_type == OAUTH2):
+        # cloud API (OAUTH2 authentication)
         token_file = Path(token)
         tokens = await load_tokens(token_file)
         if not tokens:
@@ -277,7 +277,7 @@ _cmd1_options = [
         envvar="BOSCH_HOST",
         type=str,
         required=True,
-        help="IP address of gateway or SERIAL for XMPP and POINTTAPI ('Login' on a sticker on your device)",
+        help="IP address of gateway or SERIAL for XMPP and OAUTH2 ('Login' on a sticker on your device)",
     ),
     click.option(
         "--token",
@@ -296,9 +296,9 @@ _cmd1_options = [
     click.option(
         "--protocol",
         envvar="BOSCH_PROTOCOL",
-        type=click.Choice([XMPP, HTTP, POINTTAPI], case_sensitive=True),
+        type=click.Choice([XMPP, HTTP, OAUTH2], case_sensitive=True),
         required=True,
-        help="Bosch protocol. Either XMPP, HTTP or POINTTAPI.",
+        help="Bosch protocol. Either XMPP, HTTP or OAUTH2.",
     ),
     click.option(
         "--device",
@@ -389,7 +389,7 @@ async def scan(
             _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
-    elif session_type == POINTTAPI:
+    elif session_type == OAUTH2:
         session = aiohttp.ClientSession()
     else:
         _LOGGER.error("Wrong protocol for this device")
@@ -456,7 +456,7 @@ async def query(
             _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
-    elif session_type == POINTTAPI:
+    elif session_type == OAUTH2:
         session = aiohttp.ClientSession()
     else:
         _LOGGER.error("Wrong protocol for this device")

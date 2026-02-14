@@ -21,7 +21,7 @@ from aiohttp.client_exceptions import (
     ClientError,
 )
 
-from bosch_thermostat_client.const import POINTTAPI, APP_JSON, GET, PUT
+from bosch_thermostat_client.const import OAUTH2, APP_JSON, GET, PUT
 from bosch_thermostat_client.exceptions import DeviceException, ResponseException
 
 _LOGGER = logging.getLogger(__name__)
@@ -97,8 +97,8 @@ class BulkEndpoint:
             )
 
 
-class PoinTTAPIConnector:
-    """Connector for Bosch PoinTT API with OAuth authentication."""
+class Oauth2Connector:
+    """Connector for Bosch PoinTT API with OAuth2 authentication."""
 
     POINTTAPI_BASE_URL = "https://pointt-api.bosch-thermotechnology.com/pointt-api/api/v1/gateways/"
     TOKEN_URL = "https://singlekey-id.com/auth/connect/token"
@@ -127,7 +127,7 @@ class PoinTTAPIConnector:
     ]
     # hcc.tariff.read
 
-    def __init__(self, host, access_token, refresh_token=None, token_expires_at=None, device_type=POINTTAPI, token_file=None, **kwargs):
+    def __init__(self, host, access_token, refresh_token=None, token_expires_at=None, device_type=None, token_file=None, **kwargs):
         """Init PoinTT API connector.
 
         Args:

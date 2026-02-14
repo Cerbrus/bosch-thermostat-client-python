@@ -13,7 +13,7 @@ from bosch_thermostat_client.const import (
     SC,
     AC,
     REFERENCES,
-    POINTTAPI,
+    OAUTH2,
 )
 from bosch_thermostat_client.helper import BoschEntities
 from .nefit import NefitCircuit, NefitHeatingCircuit
@@ -28,7 +28,7 @@ from bosch_thermostat_client.const.easycontrol import (
     DV,
     CIRCUIT_TYPES as EASYCONTROL_CIRCUIT_TYPES,
 )
-from bosch_thermostat_client.const.pointtapi import (
+from bosch_thermostat_client.const.oauth2 import (
     CIRCUIT_TYPES as POINTTAPI_CIRCUIT_TYPES,
 )
 from bosch_thermostat_client.schedule import ZonePrograms
@@ -44,7 +44,7 @@ def choose_circuit_type(device_type, circuit_type):
             return HC
         elif circuit_type == DHW and device_type == EASYCONTROL:
             return DHW
-        elif circuit_type == AC and device_type == POINTTAPI:
+        elif circuit_type == AC:
             return AC
         else:
             return ""
@@ -58,8 +58,8 @@ def choose_circuit_type(device_type, circuit_type):
         EASYCONTROL: EasycontrolCircuit,
         EASYCONTROL + DHW: EasyDhwCircuit,
         EASYCONTROL + ZN: EasyZoneCircuit,
-        POINTTAPI + AC: ACCircuit,
-        POINTTAPI: IVTCircuit,
+        OAUTH2 + AC: ACCircuit,
+        OAUTH2: IVTCircuit,
     }[device_type + suffix()]
 
 

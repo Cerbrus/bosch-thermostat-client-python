@@ -16,6 +16,7 @@ MAGIC_IVT = bytearray.fromhex(
 IVT = "IVT"
 MBLAN = "mblan"
 IVT_MBLAN = "IVT_MBLAN"
+IVTAIR = "ivtair"
 
 """ BOSCH SCHEME """
 

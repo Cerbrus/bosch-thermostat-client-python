@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 from aiohttp import ClientSession
 
-from bosch_thermostat_client.connectors.pointtapi import PoinTTAPIConnector
+from bosch_thermostat_client.connectors.oauth2 import Oauth2Connector
 from bosch_thermostat_client.exceptions import DeviceException
 
 
@@ -35,7 +35,7 @@ class TestTokenRefresh(unittest.TestCase):
     def test_is_token_expired_no_expiry_with_refresh_token(self):
         """Test that token is considered expired when no expiry is set but refresh token exists."""
         with patch('aiohttp.ClientSession') as mock_session:
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session(),
@@ -54,7 +54,7 @@ class TestTokenRefresh(unittest.TestCase):
     def test_is_token_expired_past_expiry(self):
         """Test that token is expired when expiry is in the past."""
         with patch('aiohttp.ClientSession') as mock_session:
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session(),
@@ -72,7 +72,7 @@ class TestTokenRefresh(unittest.TestCase):
     def test_is_token_expired_near_expiry(self):
         """Test that token is expired when expiry is within 5 minutes."""
         with patch('aiohttp.ClientSession') as mock_session:
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session(),
@@ -90,7 +90,7 @@ class TestTokenRefresh(unittest.TestCase):
     def test_is_token_expired_valid_token(self):
         """Test that token is not expired when expiry is well in the future."""
         with patch('aiohttp.ClientSession') as mock_session:
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session(),
@@ -125,7 +125,7 @@ class TestTokenRefresh(unittest.TestCase):
             mock_session = MagicMock()
             mock_session.post = MagicMock(return_value=mock_cm)
 
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session,
@@ -178,7 +178,7 @@ class TestTokenRefresh(unittest.TestCase):
             mock_session = MagicMock()
             mock_session.post = MagicMock(return_value=mock_cm)
 
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session,
@@ -242,7 +242,7 @@ class TestTokenRefresh(unittest.TestCase):
             mock_get.__name__ = 'get'
             mock_session.get = mock_get
 
-            connector = PoinTTAPIConnector(
+            connector = Oauth2Connector(
                 host=self.device_id,
                 access_token=self.access_token,
                 loop=mock_session,
