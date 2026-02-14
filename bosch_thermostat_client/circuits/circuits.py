@@ -19,8 +19,8 @@ from bosch_thermostat_client.helper import BoschEntities
 from .nefit import NefitCircuit, NefitHeatingCircuit
 from .ivt import IVTCircuit
 from .easycontrol import EasycontrolCircuit, EasyZoneCircuit
-from .pointtapi import ACCircuit
-from bosch_thermostat_client.const.ivt import IVT, CIRCUIT_TYPES, IVT_MBLAN
+from .ivtair import ACCircuit
+from bosch_thermostat_client.const.ivt import IVT, CIRCUIT_TYPES, IVT_MBLAN, IVTAIR, BRUDERUS
 from bosch_thermostat_client.const.nefit import NEFIT
 from bosch_thermostat_client.const.easycontrol import (
     EASYCONTROL,
@@ -58,8 +58,8 @@ def choose_circuit_type(device_type, circuit_type):
         EASYCONTROL: EasycontrolCircuit,
         EASYCONTROL + DHW: EasyDhwCircuit,
         EASYCONTROL + ZN: EasyZoneCircuit,
-        OAUTH2 + AC: ACCircuit,
-        OAUTH2: IVTCircuit,
+        IVTAIR + AC: ACCircuit,
+        BRUDERUS: IVTCircuit,
     }[device_type + suffix()]
 
 
