@@ -327,7 +327,6 @@ _scan_options = [
     click.option(
         "--stdout", default=False, count=True, help="Print scan to stdout"
     ),
-    click.option("-d", "--debug", default=False, count=True),
     click.option(
         "-i",
         "--ignore-unknown",
