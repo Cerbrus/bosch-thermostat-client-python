@@ -45,7 +45,6 @@ logging.getLogger().handlers[0].setFormatter(
     )
 )
 
-
 def set_debug(debug: int) -> None:
     if debug == 0:
         logging.basicConfig(level=logging.INFO)
@@ -229,6 +228,9 @@ async def init_gateway(host, session, session_type, token, password, BoschGatewa
             await authenticate_and_save_tokens(host, token)
             # retry loading token file
             tokens = await load_tokens(token_file)
+            if tokens is None:
+                _LOGGER.error("Failed to load tokens after authentication. Exiting.")
+                raise FailedAuthException("Failed to load tokens after authentication.")
 
         gateway = BoschGateway(
             session=session,
@@ -379,12 +381,13 @@ async def scan(
         _LOGGER.error("Wrong device type: %s", device)
         return
     session_type = protocol.upper()
+    gateway = None
     if session_type == XMPP:
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
         if device.upper() != IVT:
-            _LOGGER.warn(
+            _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
     elif session_type == POINTTAPI:
@@ -404,7 +407,8 @@ async def scan(
             _LOGGER.error("Couldn't connect to gateway!")
     finally:
         await session.close()
-        await gateway.close(force=True)
+        if gateway is not None:
+            await gateway.close(force=True)
 
 
 _path_options = [
@@ -444,19 +448,19 @@ async def query(
         return
     session_type = protocol.upper()
     _LOGGER.info("Connecting to %s with '%s'", host, session_type)
+    gateway = None
     if session_type == XMPP:
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
         if device.upper() != IVT:
-            _LOGGER.warn(
+            _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
     elif session_type == POINTTAPI:
         session = aiohttp.ClientSession()
     else:
         _LOGGER.error("Wrong protocol for this device")
-        return
     try:
         gateway = await init_gateway(host, session, session_type, token, password, BoschGateway)
         await _runquery(gateway, path)
@@ -464,7 +468,8 @@ async def query(
         _LOGGER.error(e)
     finally:
         await session.close()
-        await gateway.close(force=True)
+        if gateway is not None:
+            await gateway.close(force=True)
 
 
 _path_put_options = [
@@ -514,12 +519,13 @@ async def put(
         return
     session_type = protocol.upper()
     _LOGGER.info("Connecting to %s with '%s'", host, session_type)
+    gateway = None
     if session_type == XMPP:
         session = asyncio.get_event_loop()
     elif session_type == HTTP:
         session = aiohttp.ClientSession()
         if device.upper() != IVT:
-            _LOGGER.warn(
+            _LOGGER.warning(
                 "You're using HTTP protocol, but your device probably doesn't support it. Check for mistakes!"
             )
     else:
@@ -529,7 +535,8 @@ async def put(
         gateway = await init_gateway(host, session, session_type, token, password, BoschGateway)
         await _runpush(gateway, path, value)
     finally:
-        await gateway.close(force=True)
+        if gateway is not None:
+            await gateway.close(force=True)
 
 
 if __name__ == "__main__":
