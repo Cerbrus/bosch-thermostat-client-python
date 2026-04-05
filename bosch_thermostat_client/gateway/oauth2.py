@@ -21,7 +21,8 @@ from bosch_thermostat_client.const import (
     UUID,
 )
 from bosch_thermostat_client.const.ivt import SYSTEM_INFO
-from bosch_thermostat_client.const.oauth2 import CIRCUIT_TYPES, SYSTEM_MODEL
+from bosch_thermostat_client.const.easycontrol import CIRCUIT_TYPES as EASYCONTROL_CIRCUIT_TYPES
+from bosch_thermostat_client.const.oauth2 import CIRCUIT_TYPES as OAUTH2_CIRCUIT_TYPES, SYSTEM_MODEL
 from bosch_thermostat_client.exceptions import DeviceException, FirmwareException, UnknownDevice
 from bosch_thermostat_client.db import get_db_of_firmware, async_get_errors
 from bosch_thermostat_client.circuits import Circuits
@@ -34,8 +35,6 @@ _LOGGER = logging.getLogger(__name__)
 
 class Oauth2Gateway(BaseGateway):
     """Gateway connecting to the Bosch PoinTT API."""
-
-    circuit_types = CIRCUIT_TYPES
 
     def __init__(
         self,
@@ -64,6 +63,12 @@ class Oauth2Gateway(BaseGateway):
             token_file (str, optional): Path to token storage file (for standalone use, not HA)
             **kwargs: Additional arguments for compatibility
         """
+        from bosch_thermostat_client.const.easycontrol import EASYCONTROL
+        if device_type == EASYCONTROL:
+            self.circuit_types = EASYCONTROL_CIRCUIT_TYPES
+        else:
+            self.circuit_types = OAUTH2_CIRCUIT_TYPES
+
         self._device_id = host  # For OAuth2 API, host is the device ID
         self._access_token = access_token
         self._refresh_token = refresh_token
