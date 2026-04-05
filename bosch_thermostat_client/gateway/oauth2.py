@@ -120,11 +120,18 @@ class Oauth2Gateway(BaseGateway):
             if model is not None:
                 _LOGGER.debug("Found supported device %s", model)
                 return model
+        # POINTT API: productID is the reliable identifier for EasyControl devices
+        product_id = self._data[GATEWAY].get("productID")
+        if product_id:
+            model = model_scheme.get(product_id)
+            if model is not None:
+                _LOGGER.debug("Found supported device via productID %s: %s", product_id, model)
+                return model
 
-        _LOGGER.error(
-            "I cannot find supported device. Your devices: %s", json.dumps(system_info)
+        raise UnknownDevice(
+            "Cannot find supported device. system_info=%s, productID=%s"
+            % (json.dumps(system_info), product_id)
         )
-        exit(1)
 
     async def initialize_circuits(self, circ_type):
         """Initialize circuits for PoinTT API.
