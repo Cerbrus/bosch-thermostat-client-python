@@ -86,7 +86,7 @@ class Oauth2Gateway(BaseGateway):
             loop=session,
             token_file=token_file,
         )
-        self._data = {GATEWAY: {}}
+        self._data = {GATEWAY: {}, SYSTEM: {}}
         super().__init__(host)
 
     async def _update_info(self, initial_db):
@@ -107,8 +107,7 @@ class Oauth2Gateway(BaseGateway):
         system_bus = self._data[GATEWAY].get(SYSTEM_BUS)
         model_scheme = _db[MODELS]
         self._bus_type = system_bus
-        #system_info = self._data[GATEWAY].get(SYSTEM_INFO)
-        system_info = self._data[SYSTEM].get(SYSTEM_INFO2)
+        system_info = self._data[GATEWAY].get(SYSTEM_INFO)
         attached_devices = {}
         if system_info:
             for info in system_info.values:
