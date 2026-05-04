@@ -25,8 +25,9 @@ from pathlib import Path
 
 import aiohttp
 
-from bosch_thermostat_client.const import POINTTAPI
+from bosch_thermostat_client.const import oauth2
 from bosch_thermostat_client.gateway import gateway_chooser
+from bosch_thermostat_client.const.ivt import BUDERUS
 
 # Configure logging
 logging.basicConfig(
@@ -63,9 +64,10 @@ async def authenticate_and_save_tokens(device_id=None, token_file="tokens.json")
     async with aiohttp.ClientSession() as session:
         # Create connector to handle OAuth flow
         # We use a placeholder for access_token initially
-        GatewayClass = gateway_chooser(POINTTAPI)
+        GatewayClass = gateway_chooser(BUDERUS)
         gateway = GatewayClass(
             session=session,
+            device_type="BUDERUS",
             session_type="HTTP",
             host=device_id,
             access_key=None,
