@@ -6,7 +6,7 @@ from colorlog import ColoredFormatter
 import aiohttp
 import bosch_thermostat_client as bosch
 from bosch_thermostat_client.const import XMPP, HTTP, OAUTH2
-from bosch_thermostat_client.const.ivt import IVT, IVTAIR, BRUDERUS
+from bosch_thermostat_client.const.ivt import IVT, IVTAIR, BUDERUS
 from bosch_thermostat_client.const.nefit import NEFIT
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 from bosch_thermostat_client.version import __version__
@@ -304,7 +304,7 @@ _cmd1_options = [
     click.option(
         "--device",
         envvar="BOSCH_DEVICE",
-        type=click.Choice([NEFIT, IVT, EASYCONTROL, BRUDERUS, IVTAIR], case_sensitive=False),
+        type=click.Choice([NEFIT, IVT, EASYCONTROL, BUDERUS, IVTAIR], case_sensitive=False),
         required=True,
         help="Bosch device type (brand)",
     ),

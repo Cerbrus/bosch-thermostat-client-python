@@ -14,7 +14,7 @@ from bosch_thermostat_client.const.ivt import (
     RC300_RC200,
     MBLAN,
     IVTAIR,
-    BRUDERUS
+    BUDERUS
 )
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 
@@ -31,7 +31,7 @@ DEVICE_TYPES = {
     NSC_ICOM_GATEWAY: "nsc_icom_gateway/{}.json",
     EASYCONTROL: "easycontrol/{}.json",
     IVTAIR: "ivtair/{}.json",
-    BRUDERUS: "bruderus/{}.json",
+    BUDERUS: "buderus/{}.json",
 }
 
 
