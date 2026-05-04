@@ -9,6 +9,7 @@ GET = "get"
 PUT = "put"
 
 GATEWAY = "gateway"
+SYSTEM = "system"
 MODELS = "models"
 
 TIMEOUT = 10

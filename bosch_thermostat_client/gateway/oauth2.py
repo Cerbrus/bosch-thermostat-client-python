@@ -6,6 +6,7 @@ import logging
 from bosch_thermostat_client.connectors import connector_ivt_chooser
 from bosch_thermostat_client.const import (
     GATEWAY,
+    SYSTEM
     HC,
     AC,
     MODELS,
@@ -106,10 +107,11 @@ class Oauth2Gateway(BaseGateway):
         system_bus = self._data[GATEWAY].get(SYSTEM_BUS)
         model_scheme = _db[MODELS]
         self._bus_type = system_bus
-        system_info = self._data[GATEWAY].get(SYSTEM_INFO)
+        #system_info = self._data[GATEWAY].get(SYSTEM_INFO)
+        system_info = self._data[SYSTEM].get(SYSTEM_INFO2)
         attached_devices = {}
         if system_info:
-            for info in system_info:
+            for info in system_info.values:
                 #_id = info.get("ModuleHwIdentStr", -1)
                 _id = info.get("Id", -1)
                 model = model_scheme.get(_id)
