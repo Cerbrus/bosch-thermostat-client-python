@@ -110,7 +110,8 @@ class Oauth2Gateway(BaseGateway):
         attached_devices = {}
         if system_info:
             for info in system_info:
-                _id = info.get("ModuleHwIdentStr", -1)
+                #_id = info.get("ModuleHwIdentStr", -1)
+                _id = info.get("Id", -1)
                 model = model_scheme.get(_id)
                 if model is not None:
                     _LOGGER.debug("Found supported device %s with id %s", model, _id)
