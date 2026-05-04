@@ -110,7 +110,7 @@ class Oauth2Gateway(BaseGateway):
         system_info = self._data[GATEWAY].get(SYSTEM_INFO)
         attached_devices = {}
         if system_info:
-            for info in system_info.values:
+            for info in system_info:
                 #_id = info.get("ModuleHwIdentStr", -1)
                 _id = info.get("Id", -1)
                 model = model_scheme.get(_id)

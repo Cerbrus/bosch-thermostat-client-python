@@ -16,7 +16,12 @@
       "value": "MX300",
       "name": "MX300",
       "type": "BUDERUS"
-    }
+    },
+    "158": {
+      "value": "RC300",
+      "name": "RC300/RC310/Nefit Moduline 3000",
+      "type": "RC300_RC200"
+    },
   },
   "_unsupported": {
     "systemType": "/system/systemType"
