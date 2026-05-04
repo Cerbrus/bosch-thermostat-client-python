@@ -3,6 +3,7 @@ from . import (
     CONTENT_TYPE,
     APP_JSON,
     HC,
+    SYSTEM,
     HEATING_CIRCUITS,
     DHW,
     DHW_CIRCUITS,

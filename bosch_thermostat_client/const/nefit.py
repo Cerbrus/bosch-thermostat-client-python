@@ -1,5 +1,6 @@
 from . import (
     HC,
+    SYSTEM,
     HEATING_CIRCUITS,
     DHW,
     DHW_CIRCUITS,

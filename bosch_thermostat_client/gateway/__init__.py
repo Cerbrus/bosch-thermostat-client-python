@@ -7,7 +7,7 @@ from bosch_thermostat_client.const.nefit import NEFIT
 from bosch_thermostat_client.const.easycontrol import EASYCONTROL
 
 
-def gateway_chooser(device_type=IVT):
+def gateway_chooser(device_type=BUDERUS):
     return {
         IVT: IVTGateway,
         NEFIT: NefitGateway,

@@ -9,6 +9,7 @@ from bosch_thermostat_client.const import (
     HTTP,
     XMPP,
     GATEWAY,
+    SYSTEM,
     MODELS,
     EMS,
     SYSTEM_BUS,

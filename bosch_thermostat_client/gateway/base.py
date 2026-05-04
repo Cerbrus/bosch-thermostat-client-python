@@ -16,6 +16,7 @@ from bosch_thermostat_client.const import (
     DHW_CIRCUITS,
     FIRMWARE_VERSION,
     GATEWAY,
+    SYSTEM,
     HC,
     HEATING_CIRCUITS,
     ID,

@@ -6,7 +6,7 @@ import logging
 from bosch_thermostat_client.connectors import connector_ivt_chooser
 from bosch_thermostat_client.const import (
     GATEWAY,
-    SYSTEM
+    SYSTEM,
     HC,
     AC,
     MODELS,

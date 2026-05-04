@@ -7,6 +7,7 @@ from bosch_thermostat_client.const import (
     DHW,
     EMS,
     GATEWAY,
+    SYSTEM,
     HTTP,
     ID,
     MODELS,

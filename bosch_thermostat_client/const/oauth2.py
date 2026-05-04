@@ -4,6 +4,7 @@ from . import (
   DHW,
   DHW_CIRCUITS,
   HC,
+  SYSTEM,
   HEATING_CIRCUITS
 )
 
